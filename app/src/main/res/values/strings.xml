@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Composedle</string>
+    <string name="not_a_word">Not a valid word</string>
 </resources>

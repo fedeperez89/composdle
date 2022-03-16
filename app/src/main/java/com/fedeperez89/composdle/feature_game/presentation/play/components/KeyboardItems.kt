@@ -9,16 +9,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun KeyItem(modifier: Modifier = Modifier, letter: String, onClick: (String) -> Unit) {
+fun KeyItem(modifier: Modifier = Modifier, letter: String, used: Boolean, onClick: (String) -> Unit) {
     Card(
         modifier = modifier,
-        backgroundColor = Color.Gray,
+        backgroundColor = if (used) Color.Gray else Color.LightGray,
         onClick = { onClick(letter) }
     ) {
         Column(
@@ -40,13 +39,14 @@ fun KeyItem(modifier: Modifier = Modifier, letter: String, onClick: (String) -> 
 }
 
 @Composable
-fun KeyRow(keys: List<String>, onKeyClicked: (String) -> Unit) {
+fun KeyRow(keys: List<String>, usedLetters: Set<String>, onKeyClicked: (String) -> Unit) {
     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         keys.forEach {
             KeyItem(
                 modifier = Modifier
                     .weight(1f)
                     .aspectRatio(0.75f), letter = it,
+                used = usedLetters.contains(it),
                 onClick = onKeyClicked
             )
         }
@@ -54,7 +54,7 @@ fun KeyRow(keys: List<String>, onKeyClicked: (String) -> Unit) {
 }
 
 @Composable
-fun KeyboardItem(onKeyClicked: (String) -> Unit) {
+fun KeyboardItem(usedLetters: Set<String>, onKeyClicked: (String) -> Unit) {
     val topRow = listOf("Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P")
     val middleRow = listOf("A", "S", "D", "F", "G", "H", "J", "K", "L")
     val bottomRow = listOf("ENTER", "Z", "X", "C", "V", "B", "N", "M", "K", "L", "<=")
@@ -62,7 +62,7 @@ fun KeyboardItem(onKeyClicked: (String) -> Unit) {
 
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         keyboard.forEach {
-            KeyRow(keys = it, onKeyClicked = onKeyClicked)
+            KeyRow(keys = it, usedLetters = usedLetters, onKeyClicked = onKeyClicked)
         }
     }
 }

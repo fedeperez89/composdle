@@ -1,6 +1,7 @@
 package com.fedeperez89.composdle.feature_game.data.repository
 
 import com.fedeperez89.composdle.feature_game.domain.repository.WordRepository
+import java.time.LocalDate
 import java.util.concurrent.ThreadLocalRandom
 import javax.inject.Inject
 
@@ -10,7 +11,7 @@ class InMemoryWordRepository @Inject constructor() : WordRepository {
 
     override suspend fun wordExists(word: String): Boolean = words.contains(word)
 
-    override suspend fun randomWord(): String = words.stream()
+    override suspend fun wordForDay(date: LocalDate): String = words.stream()
         .skip(
             ThreadLocalRandom.current()
                 .nextInt(words.size).toLong()

@@ -1,5 +1,6 @@
 package com.fedeperez89.composdle.feature_game.presentation.play
 
+import androidx.annotation.StringRes
 import com.fedeperez89.composdle.feature_game.presentation.play.components.LetterItemState
 import com.fedeperez89.composdle.feature_game.presentation.play.components.WordItemState
 
@@ -48,5 +49,6 @@ data class PlayState(
             )
         )
     ),
-    val usedLetters: Set<Char> = emptySet()
+    val usedLetters: Set<String> = emptySet(),
+    @StringRes val message: Int = 0,
 )

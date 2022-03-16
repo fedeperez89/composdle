@@ -45,6 +45,6 @@ data class LetterItemState(val label: Char?, val state: LetterState = LetterStat
 enum class LetterState(val color: Color) {
     OK(Color.Green),
     POSITION(Color.Yellow),
-    INCORRECT(Color.Gray),
+    NOT_IN_WORD(Color.Gray),
     NOT_SUBMITTED(Color.Transparent)
 }
