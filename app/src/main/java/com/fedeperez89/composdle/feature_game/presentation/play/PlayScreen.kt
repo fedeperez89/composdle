@@ -41,6 +41,5 @@ fun PlayScreen(
                 viewModel.onEvent(event)
             }
         }
-
     }
 }
