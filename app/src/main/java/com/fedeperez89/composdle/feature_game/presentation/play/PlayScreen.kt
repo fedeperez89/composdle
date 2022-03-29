@@ -4,11 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
-import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -34,7 +32,7 @@ fun PlayScreen(
                 }
             }
             BoardItem(state.words)
-            KeyboardItem(usedLetters = state.usedLetters) {
+            KeyboardItem(lettersState = state.lettersState) {
                 val event = when (it) {
                     "ENTER" -> PlayEvent.EnterPressed
                     "<=" -> PlayEvent.BackspacePressed

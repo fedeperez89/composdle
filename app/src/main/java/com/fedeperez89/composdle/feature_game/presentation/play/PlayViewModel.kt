@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fedeperez89.composdle.R
 import com.fedeperez89.composdle.feature_game.domain.use_case.*
+import com.fedeperez89.composdle.feature_game.presentation.play.components.KeyState
 import com.fedeperez89.composdle.feature_game.presentation.play.components.LetterItemState
 import com.fedeperez89.composdle.feature_game.presentation.play.components.LetterState
 import com.fedeperez89.composdle.feature_game.presentation.play.components.WordItemState
@@ -22,9 +23,9 @@ class PlayViewModel @Inject constructor(
     private val _state = mutableStateOf(PlayState())
     val state: State<PlayState> = _state
 
-    private var wordOfTheDay = CharArray(5)
+    private var wordOfTheDay: List<Char> = emptyList()
     private var currentWordIndex = 0
-    private var currentWord: Array<Char?> = arrayOfNulls(5)
+    private var currentWord: MutableList<Char?> = MutableList(5) { null }
 
     private var currentLetterIndex = 0
 
@@ -39,7 +40,6 @@ class PlayViewModel @Inject constructor(
             is PlayEvent.LetterPressed -> onLetterPressed(event.letter)
             PlayEvent.BackspacePressed -> onBackspacePressed()
             PlayEvent.EnterPressed -> onWordSubmit()
-
         }
     }
 
@@ -77,7 +77,7 @@ class PlayViewModel @Inject constructor(
                     updateWordState(currentResult.data, submit = true)
                     currentWordIndex++
                     currentLetterIndex = 0
-                    currentWord = arrayOfNulls(5)
+                    currentWord = MutableList(5) { null }
                 }
                 is WordEnteredUseCase.WordEnteredResult.NotAWord -> {
                     _state.value = _state.value.copy(message = R.string.not_a_word)
@@ -86,7 +86,7 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun updateWordState(currentResult: Array<LetterPosition>, submit: Boolean = false) {
+    private fun updateWordState(currentResult: List<LetterPosition>, submit: Boolean = false) {
         val words = _state.value.words
         val updatedWords = words.toMutableList()
         updatedWords[currentWordIndex] = WordItemState(
@@ -100,15 +100,20 @@ class PlayViewModel @Inject constructor(
             }
         )
         val usedLetters = if (submit) {
-            val addedLetters = _state.value.usedLetters.toMutableSet()
-            currentWord.filterNotNull().forEach {
-                addedLetters.add(it.toString())
+            val addedLetters = _state.value.lettersState.toMutableMap()
+            currentResult.forEach {
+                val value = when(it){
+                    is Incorrect -> KeyState.POSITION
+                    is NotInWord -> KeyState.NOT_IN_WORD
+                    is Ok -> KeyState.OK
+                }
+                addedLetters[it.letter.toString()] = value
             }
             addedLetters
         } else {
-            _state.value.usedLetters
+            _state.value.lettersState
         }
 
-        _state.value = _state.value.copy(words = updatedWords, usedLetters = usedLetters)
+        _state.value = _state.value.copy(words = updatedWords, lettersState = usedLetters)
     }
 }

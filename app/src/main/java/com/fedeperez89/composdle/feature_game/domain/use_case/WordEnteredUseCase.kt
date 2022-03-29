@@ -6,15 +6,15 @@ import javax.inject.Inject
 class WordEnteredUseCase @Inject constructor(private val wordsRepository: WordRepository) {
 
     sealed class WordEnteredResult {
-        data class WordOK(val data: Array<LetterPosition>) : WordEnteredResult()
+        data class WordOK(val data: List<LetterPosition>) : WordEnteredResult()
         object NotAWord : WordEnteredResult()
     }
 
-    suspend operator fun invoke(word: Array<Char?>, wordOfTheDay: CharArray, verify: Boolean = false): WordEnteredResult {
+    suspend operator fun invoke(word: List<Char?>, wordOfTheDay: List<Char>, verify: Boolean = false): WordEnteredResult {
         if (verify && !wordsRepository.wordExists(word.joinToString(separator = ""))) {
             return WordEnteredResult.NotAWord
         }
-        val result = Array<LetterPosition>(word.size) { Incorrect('0') }
+        val result = MutableList<LetterPosition>(word.size) { Incorrect('0') }
         val letterCount = wordOfTheDay.groupBy { it }.toMutableMap()
         wordOfTheDay.mapIndexed { index, char ->
             val letterToCheck = word[index]

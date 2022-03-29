@@ -14,10 +14,10 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun KeyItem(modifier: Modifier = Modifier, letter: String, used: Boolean, onClick: (String) -> Unit) {
+fun KeyItem(modifier: Modifier = Modifier, letter: String, state: KeyState, onClick: (String) -> Unit) {
     Card(
         modifier = modifier,
-        backgroundColor = if (used) Color.Gray else Color.LightGray,
+        backgroundColor = state.backgroundColor,
         onClick = { onClick(letter) }
     ) {
         Column(
@@ -32,21 +32,21 @@ fun KeyItem(modifier: Modifier = Modifier, letter: String, used: Boolean, onClic
                 textAlign = TextAlign.Center,
                 text = letter,
                 fontSize = 12.sp,
-                color = Color.White
+                color = state.letterColor
             )
         }
     }
 }
 
 @Composable
-fun KeyRow(keys: List<String>, usedLetters: Set<String>, onKeyClicked: (String) -> Unit) {
+fun KeyRow(keys: List<String>, lettersState: Map<String, KeyState>, onKeyClicked: (String) -> Unit) {
     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-        keys.forEach {
+        keys.forEach { it ->
             KeyItem(
                 modifier = Modifier
                     .weight(1f)
                     .aspectRatio(0.75f), letter = it,
-                used = usedLetters.contains(it),
+                state = lettersState[it] ?: KeyState.UNUSED,
                 onClick = onKeyClicked
             )
         }
@@ -54,15 +54,22 @@ fun KeyRow(keys: List<String>, usedLetters: Set<String>, onKeyClicked: (String) 
 }
 
 @Composable
-fun KeyboardItem(usedLetters: Set<String>, onKeyClicked: (String) -> Unit) {
+fun KeyboardItem(lettersState: Map<String, KeyState>, onKeyClicked: (String) -> Unit) {
     val topRow = listOf("Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P")
     val middleRow = listOf("A", "S", "D", "F", "G", "H", "J", "K", "L")
-    val bottomRow = listOf("ENTER", "Z", "X", "C", "V", "B", "N", "M", "K", "L", "<=")
+    val bottomRow = listOf("<=", "Z", "X", "C", "V", "B", "N", "M", "K", "L", "ENTER")
     val keyboard = listOf(topRow, middleRow, bottomRow)
 
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         keyboard.forEach {
-            KeyRow(keys = it, usedLetters = usedLetters, onKeyClicked = onKeyClicked)
+            KeyRow(keys = it, lettersState = lettersState, onKeyClicked = onKeyClicked)
         }
     }
+}
+
+enum class KeyState(val backgroundColor: Color, val letterColor: Color) {
+    OK(Color(android.graphics.Color.parseColor("#6AAA64")), Color.White),
+    POSITION(Color(android.graphics.Color.parseColor("#C9B458")), Color.White),
+    NOT_IN_WORD(Color(android.graphics.Color.parseColor("#787C7E")), Color.White),
+    UNUSED(Color.LightGray, Color.White)
 }

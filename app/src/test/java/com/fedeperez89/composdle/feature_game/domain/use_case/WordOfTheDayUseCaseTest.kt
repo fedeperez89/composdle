@@ -17,7 +17,7 @@ class WordOfTheDayUseCaseTest {
         }
 
         val useCase = WordOfTheDayUseCase(wordRepository)
-        assertTrue(charArrayOf('R', 'O', 'A', 'T', 'E') contentEquals useCase())
+        assertEquals(listOf('R', 'O', 'A', 'T', 'E'), useCase())
     }
 
 
@@ -28,6 +28,6 @@ class WordOfTheDayUseCaseTest {
             coEvery { wordForDay(today) } returns "ROATE"
         }
         val useCase = WordOfTheDayUseCase(wordRepository)
-        assertArrayEquals(useCase(), useCase())
+        assertEquals(useCase(), useCase())
     }
 }

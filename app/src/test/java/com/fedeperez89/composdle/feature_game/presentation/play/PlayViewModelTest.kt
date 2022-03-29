@@ -6,10 +6,8 @@ import com.fedeperez89.composdle.feature_game.domain.use_case.WordEnteredUseCase
 import com.fedeperez89.composdle.feature_game.domain.use_case.WordOfTheDayUseCase
 import com.fedeperez89.composdle.feature_game.presentation.play.components.LetterState
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -20,7 +18,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.time.LocalDate
 
 class PlayViewModelTest {
 
@@ -41,7 +38,7 @@ class PlayViewModelTest {
         val playViewModel = PlayViewModel(WordOfTheDayUseCase(wordRepository), WordEnteredUseCase(wordRepository))
         val value = playViewModel.state.value
 
-        assertTrue(value.usedLetters.isEmpty())
+        assertTrue(value.lettersState.isEmpty())
         assertEquals(LetterState.NOT_SUBMITTED, value.words.first().letters.first().state)
     }
 

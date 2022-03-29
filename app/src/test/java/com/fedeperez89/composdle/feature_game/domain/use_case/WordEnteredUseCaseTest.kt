@@ -5,7 +5,8 @@ import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 
@@ -24,8 +25,8 @@ class WordEnteredUseCaseTest {
 
     @Test
     fun `Given a correct word, result should be all OK`() = runTest {
-        val wordEntered = "HELLO".map { it }.toTypedArray() as Array<Char?>
-        val wordOfTheDay = "HELLO".toCharArray()
+        val wordEntered = "HELLO".toList()
+        val wordOfTheDay = "HELLO".toList()
         when (val useCase = wordEnteredUseCase(wordEntered, wordOfTheDay)) {
             WordEnteredUseCase.WordEnteredResult.NotAWord -> fail("Word should be valid")
             is WordEnteredUseCase.WordEnteredResult.WordOK -> useCase.data.forEachIndexed { index, position ->
@@ -36,8 +37,8 @@ class WordEnteredUseCaseTest {
 
     @Test
     fun `Given a fully incorrect word, result should be all NOT_IN_WORD`() = runTest {
-        val wordEntered = "ABCDF".map { it }.toTypedArray() as Array<Char?>
-        val wordOfTheDay = "HELLO".toCharArray()
+        val wordEntered = "ABCDF".toList()
+        val wordOfTheDay = "HELLO".toList()
         when (val useCase = wordEnteredUseCase(wordEntered, wordOfTheDay)) {
             WordEnteredUseCase.WordEnteredResult.NotAWord -> fail("Word should be valid")
             is WordEnteredUseCase.WordEnteredResult.WordOK -> useCase.data.forEachIndexed { index, position ->
@@ -48,8 +49,8 @@ class WordEnteredUseCaseTest {
 
     @Test
     fun `Given letters with wrong sorting, result should be all Incorrect`() = runTest {
-        val wordEntered = "LOHEL".map { it }.toTypedArray() as Array<Char?>
-        val wordOfTheDay = "HELLO".toCharArray()
+        val wordEntered = "LOHEL".toList()
+        val wordOfTheDay = "HELLO".toList()
         when (val useCase = wordEnteredUseCase(wordEntered, wordOfTheDay)) {
             WordEnteredUseCase.WordEnteredResult.NotAWord -> fail("Word should be valid")
             is WordEnteredUseCase.WordEnteredResult.WordOK -> useCase.data.forEachIndexed { index, position ->
@@ -60,13 +61,13 @@ class WordEnteredUseCaseTest {
 
     @Test
     fun `Given letters with correct and incorrect letters, result should be mixed`() = runTest {
-        val wordEntered = "AXCED".map { it }.toTypedArray() as Array<Char?>
-        val wordOfTheDay = "ABCDE".toCharArray()
+        val wordEntered = "AXCED".toList()
+        val wordOfTheDay = "ABCDE".toList()
         when (val useCase = wordEnteredUseCase(wordEntered, wordOfTheDay)) {
             WordEnteredUseCase.WordEnteredResult.NotAWord -> fail("Word should be valid")
             is WordEnteredUseCase.WordEnteredResult.WordOK -> {
-                assertArrayEquals(
-                    arrayOf(
+                assertEquals(
+                    listOf(
                         Ok('A'),
                         NotInWord('X'),
                         Ok('C'),
@@ -81,13 +82,13 @@ class WordEnteredUseCaseTest {
 
     @Test
     fun `Given repeated letters, result should consider usages`() = runTest {
-        val wordEntered = "MONOO".map { it }.toTypedArray() as Array<Char?>
-        val wordOfTheDay = "MOONS".toCharArray()
+        val wordEntered = "MONOO".toList()
+        val wordOfTheDay = "MOONS".toList()
         when (val useCase = wordEnteredUseCase(wordEntered, wordOfTheDay)) {
             WordEnteredUseCase.WordEnteredResult.NotAWord -> fail("Word should be valid")
             is WordEnteredUseCase.WordEnteredResult.WordOK -> {
-                assertArrayEquals(
-                    arrayOf(
+                assertEquals(
+                    listOf(
                         Ok('M'),
                         Ok('O'),
                         Incorrect('N'),

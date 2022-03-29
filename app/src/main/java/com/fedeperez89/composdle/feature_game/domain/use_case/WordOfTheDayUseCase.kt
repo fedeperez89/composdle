@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class WordOfTheDayUseCase @Inject constructor(private val wordRepository: WordRepository) {
 
-    suspend operator fun invoke(date: LocalDate = LocalDate.now()): CharArray {
-        return wordRepository.wordForDay(date).toCharArray()
+    suspend operator fun invoke(date: LocalDate = LocalDate.now()): List<Char> {
+        return wordRepository.wordForDay(date).toList()
     }
 }

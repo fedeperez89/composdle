@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -17,10 +18,14 @@ fun LetterItem(
     modifier: Modifier = Modifier,
     state: LetterItemState
 ) {
+    val boxModifier = if (state.state == LetterState.NOT_SUBMITTED) {
+        modifier.border(2.dp, Color.LightGray)
+    } else {
+        modifier
+            .background(Color(android.graphics.Color.parseColor(state.state.backgroundColor)))
+    }
     Box(
-        modifier = modifier
-            .background(state.state.color)
-            .border(1.dp, Color.Gray),
+        modifier = boxModifier,
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -32,9 +37,10 @@ fun LetterItem(
                     .fillMaxSize()
                     .wrapContentHeight(),
                 textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
                 text = state.label?.toString() ?: "",
                 fontSize = 30.sp,
-                color = Color.Black
+                color = state.state.letterColor
             )
         }
     }
@@ -42,9 +48,9 @@ fun LetterItem(
 
 data class LetterItemState(val label: Char?, val state: LetterState = LetterState.NOT_SUBMITTED)
 
-enum class LetterState(val color: Color) {
-    OK(Color.Green),
-    POSITION(Color.Yellow),
-    NOT_IN_WORD(Color.Gray),
-    NOT_SUBMITTED(Color.Transparent)
+enum class LetterState(val backgroundColor: String, val letterColor: Color) {
+    OK("#6AAA64", Color.White),
+    POSITION("#C9B458", Color.White),
+    NOT_IN_WORD("#787C7E", Color.White),
+    NOT_SUBMITTED("#FFFFFFFF", Color.Black)
 }
