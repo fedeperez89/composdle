@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fedeperez89.composdle">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".ComposdleApp"
         android:allowBackup="true"
@@ -13,7 +15,6 @@
         <activity
             android:name="com.fedeperez89.composdle.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Composedle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

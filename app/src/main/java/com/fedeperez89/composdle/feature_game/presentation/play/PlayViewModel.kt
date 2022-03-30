@@ -36,11 +36,12 @@ class PlayViewModel @Inject constructor(
     }
 
     fun onEvent(event: PlayEvent) = viewModelScope.launch {
-        when (event) {
-            is PlayEvent.LetterPressed -> onLetterPressed(event.letter)
-            PlayEvent.BackspacePressed -> onBackspacePressed()
-            PlayEvent.EnterPressed -> onWordSubmit()
-        }
+        if (!isGameOver())
+            when (event) {
+                is PlayEvent.LetterPressed -> onLetterPressed(event.letter)
+                PlayEvent.BackspacePressed -> onBackspacePressed()
+                PlayEvent.EnterPressed -> onWordSubmit()
+            }
     }
 
     private suspend fun onLetterPressed(letter: Char) {
@@ -78,6 +79,8 @@ class PlayViewModel @Inject constructor(
                     currentWordIndex++
                     currentLetterIndex = 0
                     currentWord = MutableList(5) { null }
+                    _state.value =
+                        _state.value.copy(isGameOver = currentWordIndex > 5 || currentResult.data.all { it is Ok })
                 }
                 is WordEnteredUseCase.WordEnteredResult.NotAWord -> {
                     _state.value = _state.value.copy(message = R.string.not_a_word)
@@ -102,7 +105,7 @@ class PlayViewModel @Inject constructor(
         val usedLetters = if (submit) {
             val addedLetters = _state.value.lettersState.toMutableMap()
             currentResult.forEach {
-                val value = when(it){
+                val value = when (it) {
                     is Incorrect -> KeyState.POSITION
                     is NotInWord -> KeyState.NOT_IN_WORD
                     is Ok -> KeyState.OK
@@ -116,4 +119,6 @@ class PlayViewModel @Inject constructor(
 
         _state.value = _state.value.copy(words = updatedWords, lettersState = usedLetters)
     }
+
+    private fun isGameOver() = _state.value.isGameOver
 }

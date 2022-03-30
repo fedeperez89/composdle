@@ -51,5 +51,6 @@ data class PlayState(
         )
     ),
     val lettersState: Map<String, KeyState> = emptyMap(),
+    val isGameOver: Boolean = false,
     @StringRes val message: Int = 0,
 )
