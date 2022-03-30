@@ -32,6 +32,7 @@ class PlayViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             wordOfTheDay = wordOfTheDayUseCase()
+            _state.value = _state.value.copy(wordOfTheDay = wordOfTheDay.joinToString(""))
         }
     }
 
@@ -79,8 +80,14 @@ class PlayViewModel @Inject constructor(
                     currentWordIndex++
                     currentLetterIndex = 0
                     currentWord = MutableList(5) { null }
+
+                    val gameState = when {
+                        currentResult.data.all { it is Ok } -> GameState.Won
+                        currentWordIndex >= 5 -> GameState.Lost
+                        else -> GameState.Playing
+                    }
                     _state.value =
-                        _state.value.copy(isGameOver = currentWordIndex > 5 || currentResult.data.all { it is Ok })
+                        _state.value.copy(gameState = gameState)
                 }
                 is WordEnteredUseCase.WordEnteredResult.NotAWord -> {
                     _state.value = _state.value.copy(message = R.string.not_a_word)
@@ -120,5 +127,5 @@ class PlayViewModel @Inject constructor(
         _state.value = _state.value.copy(words = updatedWords, lettersState = usedLetters)
     }
 
-    private fun isGameOver() = _state.value.isGameOver
+    private fun isGameOver() = _state.value.gameState == GameState.Won || _state.value.gameState == GameState.Lost
 }

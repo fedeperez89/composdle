@@ -5,13 +5,14 @@ import com.fedeperez89.composdle.feature_game.data.data_source.WordsDao
 import com.fedeperez89.composdle.feature_game.domain.model.Word
 import com.fedeperez89.composdle.feature_game.domain.repository.WordRepository
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
 
 class WordRepositoryImpl @Inject constructor(
-    private val ioDispatcher: CoroutineDispatcher,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val wordsDao: WordsDao,
     private val wordClient: WordClient
 ) : WordRepository {

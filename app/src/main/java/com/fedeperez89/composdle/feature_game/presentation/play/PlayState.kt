@@ -51,6 +51,13 @@ data class PlayState(
         )
     ),
     val lettersState: Map<String, KeyState> = emptyMap(),
-    val isGameOver: Boolean = false,
+    val gameState: GameState = GameState.Playing,
+    val wordOfTheDay: String = "",
     @StringRes val message: Int = 0,
 )
+
+enum class GameState {
+    Playing,
+    Won,
+    Lost
+}

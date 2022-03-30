@@ -3,6 +3,7 @@ package com.fedeperez89.composdle.feature_game.presentation.play
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
@@ -13,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.fedeperez89.composdle.feature_game.presentation.play.components.BoardItem
+import com.fedeperez89.composdle.feature_game.presentation.play.components.GameOverDialog
 import com.fedeperez89.composdle.feature_game.presentation.play.components.KeyboardItem
 
 @Composable
@@ -41,8 +43,8 @@ fun PlayScreen(
                 }
                 viewModel.onEvent(event)
             }
-            if (state.isGameOver) {
-                Text(text = "Game Over")
+            if (state.gameState != GameState.Playing) {
+                GameOverDialog(state.gameState == GameState.Won, state.wordOfTheDay)
             }
         }
     }

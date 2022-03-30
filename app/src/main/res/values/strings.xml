@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Composedle</string>
     <string name="not_a_word">Not a valid word</string>
+    <string name="well_done">Well done!</string>
+    <string name="better_luck">Better luck next time!</string>
+    <string name="well_done_message">Thank you for playing!</string>
+    <string name="word_was">Correct word was %s</string>
 </resources>
